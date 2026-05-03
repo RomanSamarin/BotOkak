@@ -15,10 +15,11 @@ from telegram.ext import (
 # ======================
 # 🔐 TOKEN (через переменную окружения)
 # ======================
+import os
+
 TOKEN = os.getenv("TOKEN")
 
-if not TOKEN:
-    raise ValueError("TOKEN не найден. Добавьте переменную окружения TOKEN в Render")
+print("TOKEN LOADED:", bool(TOKEN))
 
 # ======================
 # 🗄 DATABASE
