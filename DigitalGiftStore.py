@@ -13,12 +13,12 @@ from telegram.ext import (
 )
 
 # ======================
-# 🔐 TOKEN (через сервер)
+# 🔐 TOKEN (через переменную окружения)
 # ======================
 TOKEN = os.getenv("TOKEN")
 
 if not TOKEN:
-    raise ValueError("TOKEN не найден в переменных окружения")
+    raise ValueError("TOKEN не найден. Добавьте переменную окружения TOKEN в Render")
 
 # ======================
 # 🗄 DATABASE
@@ -124,6 +124,7 @@ async def handle_text(update, context):
             (name, category, price, "active")
         )
         conn.commit()
+
         update_balance(-price)
         context.user_data.clear()
 
@@ -205,10 +206,10 @@ async def catalog(update, context):
         return
 
     for item in items:
-        text = f"{item[1]} | {item[2]}\nЦена: {item[3]}"
+        text = f"{item[1]} | {item[2]}\n💰 Закуп: {item[3]}"
 
         keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("💰 Продать", callback_data=f"sell_{item[0]}")]
+            [InlineKeyboardButton("💸 Продать", callback_data=f"sell_{item[0]}")]
         ])
 
         await update.callback_query.message.reply_text(text, reply_markup=keyboard)
@@ -279,13 +280,8 @@ def main():
 
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
-    # 🔁 авто-стабилизация
-    while True:
-        try:
-            app.run_polling()
-        except Exception as e:
-            print("Ошибка:", e)
-            time.sleep(5)
+    print("🤖 Бот запущен!")
+    app.run_polling()
 
 
 if __name__ == "__main__":
