@@ -124,7 +124,6 @@ async def handle_text(update, context):
             (name, category, price, "active")
         )
         conn.commit()
-
         update_balance(-price)
         context.user_data.clear()
 
